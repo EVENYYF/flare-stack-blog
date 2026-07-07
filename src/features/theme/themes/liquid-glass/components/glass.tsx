@@ -1,7 +1,45 @@
 import { Link } from "@tanstack/react-router";
 import { CalendarDays, Clock3 } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
 import type { PostItem } from "@/features/posts/schema/posts.schema";
 import { cn, formatDate } from "@/lib/utils";
+
+/**
+ * SVG 位移滤镜 + Chromium 检测。
+ * backdrop-filter: url(#lg-refraction) 目前仅 Chromium 系可用（Safari 不解析、
+ * Firefox 解析但不渲染），故通过 UA 检测后在 <html> 上加 .lg-refract 开启。
+ */
+export function GlassFilter() {
+  useEffect(() => {
+    if (/Chrom(e|ium)/.test(navigator.userAgent)) {
+      document.documentElement.classList.add("lg-refract");
+    }
+    return () => document.documentElement.classList.remove("lg-refract");
+  }, []);
+
+  return (
+    <svg aria-hidden="true" className="absolute size-0 overflow-hidden">
+      <defs>
+        <filter id="lg-refraction" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.008 0.012"
+            numOctaves="2"
+            seed="7"
+            result="noise"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale="14"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
 
 export function GlassPanel({
   children,
@@ -35,13 +73,40 @@ export function PostCard({
   post: PostItem;
   featured?: boolean;
 }) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
+
+  // 鼠标跟随：光晕位置（--lg-mx/--lg-my）+ 轻微 3D 倾斜（±5°）
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      const card = cardRef.current;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      card.style.setProperty("--lg-mx", `${x * 100}%`);
+      card.style.setProperty("--lg-my", `${y * 100}%`);
+      card.style.transform = `perspective(1000px) rotateX(${(y - 0.5) * -10}deg) rotateY(${(x - 0.5) * 10}deg) translateZ(8px)`;
+    },
+    [],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.style.transform =
+      "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
+  }, []);
+
   return (
     <Link
+      ref={cardRef}
       to="/post/$slug"
       params={{ slug: post.slug }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       className={cn(
-        "group block rounded-[30px] p-[1px] transition duration-500",
-        "hover:-translate-y-1 hover:shadow-[0_30px_90px_hsl(var(--lg-accent-hue)_70%_25%/0.2)]",
+        "lg-glass-interactive group block rounded-[30px]",
+        "hover:shadow-[0_30px_90px_hsl(var(--lg-accent-hue)_70%_25%/0.2)]",
       )}
     >
       <article

@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { LogOut, Menu, UserRound } from "lucide-react";
 import type { PublicLayoutProps } from "@/features/theme/contract/layouts";
 import { m } from "@/paraglide/messages";
+import { GlassFilter } from "../components/glass";
 
 export function PublicLayout({
   children,
@@ -12,7 +13,7 @@ export function PublicLayout({
 }: PublicLayoutProps) {
   return (
     <div className="lg-theme-root flex min-h-screen flex-col text-foreground">
-      <header className="sticky top-0 z-50 px-3 py-3 sm:px-6">
+      <GlassFilter />      <header className="sticky top-0 z-50 px-3 py-3 sm:px-6">
         <nav className="lg-glass mx-auto flex h-16 max-w-6xl items-center justify-between rounded-full px-4">
           <Link to="/" className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full bg-foreground text-sm font-semibold text-background">

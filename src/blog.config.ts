@@ -30,8 +30,8 @@ export const blogConfig = {
     "liquid-glass": {
       homeBg: "/images/home-bg.webp",
       accentHue: 210,
-      glassBlur: 28,
-      glassOpacity: 0.58,
+      glassBlur: 14,
+      glassOpacity: 0.35,
     },
   },
 } as const satisfies SiteConfig;
