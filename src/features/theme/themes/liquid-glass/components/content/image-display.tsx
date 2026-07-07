@@ -1,3 +1,5 @@
+import ZoomableImage from "@/features/theme/themes/default/components/content/zoomable-image";
+
 export function ImageDisplay({
   src,
   alt,
@@ -12,13 +14,11 @@ export function ImageDisplay({
   return (
     <figure className="my-10">
       <div className="overflow-hidden rounded-[30px] border border-white/35 bg-white/20 shadow-2xl dark:border-white/10 dark:bg-white/10">
-        <img
+        <ZoomableImage
           src={src}
           alt={alt}
           width={width}
           height={height}
-          loading="lazy"
-          decoding="async"
           className="h-auto w-full object-cover"
         />
       </div>

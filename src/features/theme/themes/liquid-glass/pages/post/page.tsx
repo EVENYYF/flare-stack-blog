@@ -1,7 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Clock3, Share2 } from "lucide-react";
+import { Suspense } from "react";
 import { toast } from "sonner";
 import type { PostPageProps } from "@/features/theme/contract/pages";
+import { CommentSection } from "@/features/theme/themes/default/components/comments/view/comment-section";
+import {
+  RelatedPosts,
+  RelatedPostsSkeleton,
+} from "@/features/theme/themes/default/pages/post/components/related-posts";
+import TableOfContents from "@/features/theme/themes/default/pages/post/components/table-of-contents";
 import { formatDate } from "@/lib/utils";
 import { m } from "@/paraglide/messages";
 import { ContentRenderer } from "../../components/content/content-renderer";
@@ -54,8 +61,16 @@ export function PostPage({ post }: PostPageProps) {
         ) : null}
       </header>
 
-      <div className="mt-8 rounded-[34px] bg-background/88 px-5 py-8 shadow-2xl ring-1 ring-white/35 backdrop-blur-sm dark:bg-background/72 dark:ring-white/10 sm:px-10">
-        <ContentRenderer content={post.contentJson} />
+      <div className="relative mt-8">
+        <aside className="absolute left-full top-0 ml-10 hidden h-full xl:block">
+          <div className="lg-glass sticky top-28 w-60 rounded-[26px] p-5">
+            <TableOfContents headers={post.toc} />
+          </div>
+        </aside>
+
+        <div className="rounded-[34px] bg-background/88 px-5 py-8 shadow-2xl ring-1 ring-white/35 backdrop-blur-sm dark:bg-background/72 dark:ring-white/10 sm:px-10">
+          <ContentRenderer content={post.contentJson} />
+        </div>
       </div>
 
       <footer className="mt-8 flex justify-end">
@@ -73,6 +88,16 @@ export function PostPage({ post }: PostPageProps) {
           {m.post_share()}
         </button>
       </footer>
+
+      <section className="lg-glass mt-10 rounded-[34px] p-6 sm:p-10">
+        <Suspense fallback={<RelatedPostsSkeleton />}>
+          <RelatedPosts slug={post.slug} />
+        </Suspense>
+      </section>
+
+      <section className="lg-glass mt-10 rounded-[34px] p-6 sm:p-10">
+        <CommentSection postId={post.id} />
+      </section>
     </article>
   );
 }
