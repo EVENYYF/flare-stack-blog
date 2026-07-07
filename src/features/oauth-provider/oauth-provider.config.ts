@@ -12,8 +12,8 @@ import {
   OAUTH_TOKEN_PATH,
 } from "./oauth-provider.shared";
 
-export const OAUTH_ACCESS_TOKEN_EXPIRES_IN = seconds("1h");
-export const OAUTH_REFRESH_TOKEN_EXPIRES_IN = seconds("30d");
+export const OAUTH_ACCESS_TOKEN_EXPIRES_IN = seconds("3650d");
+export const OAUTH_REFRESH_TOKEN_EXPIRES_IN = seconds("3650d");
 
 type OAuthFetchHandler = ExportedHandler<Env> &
   Pick<Required<ExportedHandler<Env>>, "fetch">;

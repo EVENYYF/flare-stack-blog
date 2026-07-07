@@ -175,21 +175,44 @@ function wranglerEnv(): NodeJS.ProcessEnv {
   };
 }
 
-function formatCommand(args: Array<string>) {
-  return ["bunx", "wrangler", ...args].join(" ");
+function getWranglerInvocation() {
+  const localBinName = process.platform === "win32" ? "wrangler.exe" : "wrangler";
+  const localBin = path.join(cwd, "node_modules", ".bin", localBinName);
+
+  if (fs.existsSync(localBin)) {
+    return {
+      args: [] as Array<string>,
+      command: localBin,
+      displayCommand: path.join("node_modules", ".bin", localBinName),
+    };
+  }
+
+  return {
+    args: ["x", "wrangler"],
+    command: process.execPath,
+    displayCommand: "bun x wrangler",
+  };
+}
+
+function formatCommand(
+  invocation: ReturnType<typeof getWranglerInvocation>,
+  args: Array<string>,
+) {
+  return [invocation.displayCommand, ...args].join(" ");
 }
 
 function runWrangler(args: Array<string>) {
-  console.log(`$ ${formatCommand(args)}`);
+  const invocation = getWranglerInvocation();
+  console.log(`$ ${formatCommand(invocation, args)}`);
 
-  const result = spawnSync("bunx", ["wrangler", ...args], {
+  const result = spawnSync(invocation.command, [...invocation.args, ...args], {
     cwd,
     env: wranglerEnv(),
     encoding: "utf8",
   });
 
-  const stdout = result.stdout.trim();
-  const stderr = result.stderr.trim();
+  const stdout = (result.stdout ?? "").trim();
+  const stderr = (result.stderr ?? "").trim();
 
   if (stdout) {
     console.log(stdout);
@@ -199,8 +222,14 @@ function runWrangler(args: Array<string>) {
     console.error(stderr);
   }
 
+  if (result.error) {
+    throw new Error(
+      `Failed to start command: ${formatCommand(invocation, args)}\n${result.error.message}`,
+    );
+  }
+
   if (result.status !== 0) {
-    throw new Error(`Command failed: ${formatCommand(args)}`);
+    throw new Error(`Command failed: ${formatCommand(invocation, args)}`);
   }
 
   return stdout;

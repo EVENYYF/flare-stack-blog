@@ -42,6 +42,7 @@ const config = defineConfig(({ mode }) => {
         cookieName: "LOCALE",
       }),
       cloudflare({
+        remoteBindings: env.CLOUDFLARE_REMOTE_BINDINGS !== "false",
         viteEnvironment: {
           name: "ssr",
         },
