@@ -192,10 +192,10 @@ export function PostCard({
     >
       <article
         className={cn(
-          "lg-glass h-full rounded-[29px] p-6",
+          "lg-glass lg-vt-hero h-full rounded-[29px] p-6",
           featured && "md:min-h-80 md:p-8",
         )}
-        style={{ viewTransitionName: `post-card-${post.slug}` }}
+        style={{ viewTransitionName: `post-hero-${post.slug}` }}
       >
         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">

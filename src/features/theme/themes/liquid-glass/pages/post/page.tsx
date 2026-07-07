@@ -26,7 +26,10 @@ export function PostPage({ post }: PostPageProps) {
         </Link>
       </nav>
 
-      <header className="lg-glass rounded-[38px] p-6 sm:p-10">
+      <header
+        className="lg-glass lg-vt-hero rounded-[38px] p-6 sm:p-10"
+        style={{ viewTransitionName: `post-hero-${post.slug}` }}
+      >
         <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
           <span>{formatDate(post.publishedAt)}</span>
           <span className="inline-flex items-center gap-1.5">
@@ -34,10 +37,7 @@ export function PostPage({ post }: PostPageProps) {
             {post.readTimeInMinutes} min
           </span>
         </div>
-        <h1
-          className="mt-5 text-balance text-4xl font-semibold leading-tight md:text-6xl"
-          style={{ viewTransitionName: `post-title-${post.slug}` }}
-        >
+        <h1 className="mt-5 text-balance text-4xl font-semibold leading-tight md:text-6xl">
           {post.title}
         </h1>
         {post.summary ? (

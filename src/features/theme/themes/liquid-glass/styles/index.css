@@ -348,6 +348,27 @@ body {
   border-bottom: 1px solid hsl(0 0% 100% / 0.2);
 }
 
+/* ─── 液态视图过渡：卡片 ⇆ 文章页头部共享 post-hero-* 形变 ─────── */
+
+.lg-vt-hero {
+  view-transition-class: lg-hero;
+}
+
+::view-transition-group(.lg-hero) {
+  animation-duration: 480ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 新旧快照拉伸填满 group，尺寸差异表现为面板形变而非交叉淡化 */
+::view-transition-old(.lg-hero),
+::view-transition-new(.lg-hero) {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  overflow: hidden;
+  border-radius: 30px;
+}
+
 /* ─── 降级与无障碍 ─────────────────────────────────────────── */
 
 @supports not ((backdrop-filter: blur(1px))) {
