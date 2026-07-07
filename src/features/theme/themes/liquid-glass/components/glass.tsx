@@ -5,9 +5,27 @@ import type { PostItem } from "@/features/posts/schema/posts.schema";
 import { cn, formatDate } from "@/lib/utils";
 
 /**
- * SVG 位移滤镜 + Chromium 检测。
+ * 透镜位移图：R 通道编码 X 位移、G 通道编码 Y 位移，中心用 (128,128) 中性色
+ * 径向罩住 → 只有边缘 ~28% 区域产生折射，中心完全通透（Apple 透镜质感的关键）。
+ */
+const DISPLACEMENT_MAP = `data:image/svg+xml;utf8,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">' +
+    '<defs>' +
+    '<linearGradient id="gx" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#ff0000"/><stop offset="1" stop-color="#000000"/></linearGradient>' +
+    '<linearGradient id="gy" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#00ff00"/><stop offset="1" stop-color="#000000"/></linearGradient>' +
+    '<radialGradient id="c" cx="0.5" cy="0.5" r="0.75"><stop offset="0" stop-color="#808000"/><stop offset="0.72" stop-color="#808000"/><stop offset="1" stop-color="#808000" stop-opacity="0"/></radialGradient>' +
+    '</defs>' +
+    '<rect width="128" height="128" fill="url(#gx)"/>' +
+    '<rect width="128" height="128" fill="url(#gy)" style="mix-blend-mode:screen"/>' +
+    '<rect width="128" height="128" fill="url(#c)"/>' +
+    '</svg>',
+)}`;
+
+/**
+ * SVG 透镜折射滤镜 + Chromium 检测。
  * backdrop-filter: url(#lg-refraction) 目前仅 Chromium 系可用（Safari 不解析、
  * Firefox 解析但不渲染），故通过 UA 检测后在 <html> 上加 .lg-refract 开启。
+ * R/G/B 三个通道用不同位移强度分别折射再合成 → 边缘产生真实色散。
  */
 export function GlassFilter() {
   useEffect(() => {
@@ -20,20 +38,83 @@ export function GlassFilter() {
   return (
     <svg aria-hidden="true" className="absolute size-0 overflow-hidden">
       <defs>
-        <filter id="lg-refraction" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.008 0.012"
-            numOctaves="2"
-            seed="7"
-            result="noise"
+        <filter
+          id="lg-refraction"
+          x="0%"
+          y="0%"
+          width="100%"
+          height="100%"
+          colorInterpolationFilters="sRGB"
+        >
+          <feImage
+            href={DISPLACEMENT_MAP}
+            x="0%"
+            y="0%"
+            width="100%"
+            height="100%"
+            preserveAspectRatio="none"
+            result="map"
           />
           <feDisplacementMap
             in="SourceGraphic"
-            in2="noise"
-            scale="14"
+            in2="map"
+            scale="36"
             xChannelSelector="R"
             yChannelSelector="G"
+            result="dispR"
+          />
+          <feColorMatrix
+            in="dispR"
+            type="matrix"
+            values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"
+            result="chR"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="map"
+            scale="42"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="dispG"
+          />
+          <feColorMatrix
+            in="dispG"
+            type="matrix"
+            values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0"
+            result="chG"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="map"
+            scale="48"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="dispB"
+          />
+          <feColorMatrix
+            in="dispB"
+            type="matrix"
+            values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0"
+            result="chB"
+          />
+          <feComposite
+            in="chR"
+            in2="chG"
+            operator="arithmetic"
+            k1="0"
+            k2="1"
+            k3="1"
+            k4="0"
+            result="chRG"
+          />
+          <feComposite
+            in="chRG"
+            in2="chB"
+            operator="arithmetic"
+            k1="0"
+            k2="1"
+            k3="1"
+            k4="0"
           />
         </filter>
       </defs>
