@@ -11,6 +11,7 @@ import {
 import TableOfContents from "@/features/theme/themes/default/pages/post/components/table-of-contents";
 import { formatDate } from "@/lib/utils";
 import { m } from "@/paraglide/messages";
+import { BackToTop } from "../../components/glass";
 import { ContentRenderer } from "../../components/content/content-renderer";
 
 export function PostPage({ post }: PostPageProps) {
@@ -98,6 +99,8 @@ export function PostPage({ post }: PostPageProps) {
       <section className="lg-glass mt-10 rounded-[34px] p-6 sm:p-10">
         <CommentSection postId={post.id} />
       </section>
+
+      <BackToTop />
     </article>
   );
 }

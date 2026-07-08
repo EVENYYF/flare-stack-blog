@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { LogOut, Menu, UserRound } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { PublicLayoutProps } from "@/features/theme/contract/layouts";
+import { cn } from "@/lib/utils";
 import { m } from "@/paraglide/messages";
 import { GlassFilter } from "../components/glass";
 
@@ -11,10 +13,26 @@ export function PublicLayout({
   isSessionLoading,
   logout,
 }: PublicLayoutProps) {
+  // iOS 风格：滚动后导航栏收缩、宽度收窄
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="lg-theme-root flex min-h-screen flex-col text-foreground">
-      <GlassFilter />      <header className="sticky top-0 z-50 px-3 py-3 sm:px-6">
-        <nav className="lg-glass mx-auto flex h-16 max-w-6xl items-center justify-between rounded-full px-4">
+      <GlassFilter />
+      <header className="sticky top-0 z-50 px-3 py-3 sm:px-6">
+        <nav
+          className={cn(
+            "lg-glass mx-auto flex items-center justify-between rounded-full px-4 transition-all duration-300",
+            scrolled ? "h-12 max-w-4xl" : "h-16 max-w-6xl",
+          )}
+        >
           <Link to="/" className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full bg-foreground text-sm font-semibold text-background">
               LG

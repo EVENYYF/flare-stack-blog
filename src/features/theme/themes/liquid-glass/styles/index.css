@@ -369,6 +369,51 @@ body {
   border-radius: 30px;
 }
 
+/* 移动端触摸光晕：PostCard touchstart 时加 .lg-touched 绽放一次 */
+.lg-glass-interactive.lg-touched .lg-glass::before {
+  opacity: 1;
+}
+
+/* 骨架屏：玻璃底 + 高光带循环扫过 */
+.lg-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: hsl(0 0% 100% / 0.22);
+}
+
+.dark .lg-shimmer {
+  background: hsl(0 0% 100% / 0.08);
+}
+
+.lg-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    hsl(0 0% 100% / 0.35) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  animation: lg-shimmer 1.6s ease-in-out infinite;
+}
+
+.dark .lg-shimmer::after {
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    hsl(0 0% 100% / 0.12) 50%,
+    transparent 65%
+  );
+}
+
+@keyframes lg-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 /* ─── 降级与无障碍 ─────────────────────────────────────────── */
 
 @supports not ((backdrop-filter: blur(1px))) {

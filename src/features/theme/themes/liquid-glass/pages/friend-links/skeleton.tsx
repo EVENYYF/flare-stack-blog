@@ -4,7 +4,7 @@ export function FriendLinksPageSkeleton() {
       {Array.from({ length: 6 }).map((_, index) => (
         <div
           key={index}
-          className="h-44 animate-pulse rounded-[30px] bg-white/25 dark:bg-white/10"
+          className="h-44 lg-shimmer rounded-[30px]"
         />
       ))}
     </div>
