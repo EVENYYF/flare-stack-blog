@@ -132,6 +132,20 @@ export function resolveSiteConfig(
           config?.site?.theme?.fuwari?.primaryHue ??
           blogConfig.theme.fuwari.primaryHue,
       },
+      "liquid-glass": {
+        homeBg:
+          config?.site?.theme?.["liquid-glass"]?.homeBg ??
+          blogConfig.theme["liquid-glass"].homeBg,
+        accentHue:
+          config?.site?.theme?.["liquid-glass"]?.accentHue ??
+          blogConfig.theme["liquid-glass"].accentHue,
+        glassBlur:
+          config?.site?.theme?.["liquid-glass"]?.glassBlur ??
+          blogConfig.theme["liquid-glass"].glassBlur,
+        glassOpacity:
+          config?.site?.theme?.["liquid-glass"]?.glassOpacity ??
+          blogConfig.theme["liquid-glass"].glassOpacity,
+      },
     },
   });
 }
