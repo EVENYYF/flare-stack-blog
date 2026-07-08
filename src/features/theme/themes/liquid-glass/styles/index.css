@@ -414,6 +414,13 @@ body {
   }
 }
 
+/* 键盘导航焦点环（玻璃件默认 outline 被浏览器吃掉，显式补上） */
+.lg-control:focus-visible,
+.lg-glass-interactive:focus-visible {
+  outline: 2px solid hsl(var(--lg-accent-hue) 85% 55% / 0.8);
+  outline-offset: 2px;
+}
+
 /* ─── 降级与无障碍 ─────────────────────────────────────────── */
 
 @supports not ((backdrop-filter: blur(1px))) {
