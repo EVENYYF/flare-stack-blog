@@ -12,6 +12,10 @@ export function getThemePreloadImages(siteConfig: SiteConfig): Array<string> {
         siteConfig.theme.default.background?.homeImage,
         siteConfig.theme.default.background?.globalImage,
       ].filter((image): image is string => Boolean(image));
+    case "liquid-glass":
+      return siteConfig.theme["liquid-glass"].homeBg
+        ? [siteConfig.theme["liquid-glass"].homeBg]
+        : [];
     default:
       __THEME_NAME__ satisfies never;
       return [];

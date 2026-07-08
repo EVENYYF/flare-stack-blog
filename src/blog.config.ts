@@ -27,5 +27,11 @@ export const blogConfig = {
       avatar: "/images/avatar.png",
       primaryHue: 250,
     },
+    "liquid-glass": {
+      homeBg: "/images/home-bg.webp",
+      accentHue: 210,
+      glassBlur: 14,
+      glassOpacity: 0.35,
+    },
   },
 } as const satisfies SiteConfig;

@@ -17,6 +17,12 @@ export const DEFAULT_THEME_TRANSITION_MIN = 0;
 export const DEFAULT_THEME_TRANSITION_MAX = 1500;
 export const FUWARI_THEME_HUE_MIN = 0;
 export const FUWARI_THEME_HUE_MAX = 360;
+export const LIQUID_GLASS_THEME_HUE_MIN = 0;
+export const LIQUID_GLASS_THEME_HUE_MAX = 360;
+export const LIQUID_GLASS_THEME_BLUR_MIN = 8;
+export const LIQUID_GLASS_THEME_BLUR_MAX = 48;
+export const LIQUID_GLASS_THEME_OPACITY_MIN = 0.2;
+export const LIQUID_GLASS_THEME_OPACITY_MAX = 0.85;
 
 function createSiteTextSchema(max: number) {
   return z.string().trim().max(max);
@@ -171,6 +177,44 @@ function createHueFormSchema(messages: Messages) {
   });
 }
 
+function createLiquidGlassBlurSchema() {
+  return z
+    .number()
+    .int()
+    .min(LIQUID_GLASS_THEME_BLUR_MIN)
+    .max(LIQUID_GLASS_THEME_BLUR_MAX, {
+      message: `Value must be between ${LIQUID_GLASS_THEME_BLUR_MIN} and ${LIQUID_GLASS_THEME_BLUR_MAX}`,
+    });
+}
+
+function createLiquidGlassBlurFormSchema(messages: Messages) {
+  return z
+    .number()
+    .int()
+    .min(LIQUID_GLASS_THEME_BLUR_MIN)
+    .max(LIQUID_GLASS_THEME_BLUR_MAX, {
+      message: messages.settings_site_validation_glass_blur_range(),
+    });
+}
+
+function createLiquidGlassOpacitySchema() {
+  return z
+    .number()
+    .min(LIQUID_GLASS_THEME_OPACITY_MIN)
+    .max(LIQUID_GLASS_THEME_OPACITY_MAX, {
+      message: `Value must be between ${LIQUID_GLASS_THEME_OPACITY_MIN} and ${LIQUID_GLASS_THEME_OPACITY_MAX}`,
+    });
+}
+
+function createLiquidGlassOpacityFormSchema(messages: Messages) {
+  return z
+    .number()
+    .min(LIQUID_GLASS_THEME_OPACITY_MIN)
+    .max(LIQUID_GLASS_THEME_OPACITY_MAX, {
+      message: messages.settings_site_validation_glass_opacity_range(),
+    });
+}
+
 function createDefaultThemeBackgroundSchema() {
   return z.object({
     homeImage: createBackgroundImageRefSchema(),
@@ -270,6 +314,33 @@ function createFuwariThemeSiteConfigInputFormSchema(messages: Messages) {
   });
 }
 
+function createLiquidGlassThemeSiteConfigSchema() {
+  return z.object({
+    homeBg: createBackgroundImageRefSchema(),
+    accentHue: createHueSchema(),
+    glassBlur: createLiquidGlassBlurSchema(),
+    glassOpacity: createLiquidGlassOpacitySchema(),
+  });
+}
+
+function createLiquidGlassThemeSiteConfigInputSchema() {
+  return z.object({
+    homeBg: createBackgroundImageRefSchema().optional(),
+    accentHue: createHueSchema().optional(),
+    glassBlur: createLiquidGlassBlurSchema().optional(),
+    glassOpacity: createLiquidGlassOpacitySchema().optional(),
+  });
+}
+
+function createLiquidGlassThemeSiteConfigInputFormSchema(messages: Messages) {
+  return z.object({
+    homeBg: createBackgroundImageRefFormSchema(messages).optional(),
+    accentHue: createHueFormSchema(messages).optional(),
+    glassBlur: createLiquidGlassBlurFormSchema(messages).optional(),
+    glassOpacity: createLiquidGlassOpacityFormSchema(messages).optional(),
+  });
+}
+
 export const defaultThemeBackgroundSchema =
   createDefaultThemeBackgroundSchema();
 export const defaultThemeBackgroundInputSchema =
@@ -281,6 +352,10 @@ export const defaultThemeSiteConfigInputSchema =
 export const fuwariThemeSiteConfigSchema = createFuwariThemeSiteConfigSchema();
 export const fuwariThemeSiteConfigInputSchema =
   createFuwariThemeSiteConfigInputSchema();
+export const liquidGlassThemeSiteConfigSchema =
+  createLiquidGlassThemeSiteConfigSchema();
+export const liquidGlassThemeSiteConfigInputSchema =
+  createLiquidGlassThemeSiteConfigInputSchema();
 
 export const FullSiteConfigSchema = z.object({
   title: createSiteTextSchema(120),
@@ -298,6 +373,7 @@ export const FullSiteConfigSchema = z.object({
   theme: z.object({
     default: defaultThemeSiteConfigSchema,
     fuwari: fuwariThemeSiteConfigSchema,
+    "liquid-glass": liquidGlassThemeSiteConfigSchema,
   }),
 });
 
@@ -322,6 +398,8 @@ export function createSiteConfigInputFormSchema(messages: Messages) {
         default:
           createDefaultThemeSiteConfigInputFormSchema(messages).optional(),
         fuwari: createFuwariThemeSiteConfigInputFormSchema(messages).optional(),
+        "liquid-glass":
+          createLiquidGlassThemeSiteConfigInputFormSchema(messages).optional(),
       })
       .optional(),
   });
@@ -346,6 +424,7 @@ export const SiteConfigInputSchema = z.object({
     .object({
       default: defaultThemeSiteConfigInputSchema.optional(),
       fuwari: fuwariThemeSiteConfigInputSchema.optional(),
+      "liquid-glass": liquidGlassThemeSiteConfigInputSchema.optional(),
     })
     .optional(),
 });
@@ -364,6 +443,12 @@ export type DefaultThemeSiteConfigInput = z.infer<
 export type FuwariThemeSiteConfig = z.infer<typeof fuwariThemeSiteConfigSchema>;
 export type FuwariThemeSiteConfigInput = z.infer<
   typeof fuwariThemeSiteConfigInputSchema
+>;
+export type LiquidGlassThemeSiteConfig = z.infer<
+  typeof liquidGlassThemeSiteConfigSchema
+>;
+export type LiquidGlassThemeSiteConfigInput = z.infer<
+  typeof liquidGlassThemeSiteConfigInputSchema
 >;
 export type SiteConfig = z.infer<typeof FullSiteConfigSchema>;
 export type SiteConfigInput = z.infer<typeof SiteConfigInputSchema>;
