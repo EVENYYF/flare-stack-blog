@@ -1,6 +1,7 @@
-import { Link } from "@tanstack/react-router";
-import { LogOut, Menu, UserRound } from "lucide-react";
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { LogOut, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/common/theme-toggle";
 import type { PublicLayoutProps } from "@/features/theme/contract/layouts";
 import { cn } from "@/lib/utils";
 import { m } from "@/paraglide/messages";
@@ -13,6 +14,7 @@ export function PublicLayout({
   isSessionLoading,
   logout,
 }: PublicLayoutProps) {
+  const { siteConfig } = useRouteContext({ from: "__root__" });
   // iOS 风格：滚动后导航栏收缩、宽度收窄
   const [scrolled, setScrolled] = useState(false);
 
@@ -35,10 +37,10 @@ export function PublicLayout({
         >
           <Link to="/" className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full bg-foreground text-sm font-semibold text-background">
-              LG
+              {siteConfig.title.trim().slice(0, 2)}
             </span>
             <span className="hidden text-sm font-semibold tracking-tight sm:block">
-              Liquid Glass
+              {siteConfig.title}
             </span>
           </Link>
 
@@ -86,13 +88,7 @@ export function PublicLayout({
                 {m.nav_login()}
               </Link>
             )}
-            <button
-              type="button"
-              className="lg-control grid size-9 place-items-center rounded-full md:hidden"
-              aria-label="Menu"
-            >
-              <Menu className="size-4" />
-            </button>
+            <ThemeToggle className="lg-control grid size-9 place-items-center rounded-full" />
           </div>
         </nav>
       </header>
@@ -123,7 +119,11 @@ export function PublicLayout({
       </nav>
 
       <footer className="px-6 py-12 text-center text-xs text-muted-foreground">
-        Built with Flare Stack Blog
+        <p>
+          © {new Date().getFullYear()} {siteConfig.title}
+          {siteConfig.author ? ` · ${siteConfig.author}` : null}
+        </p>
+        <p className="mt-1 opacity-70">Powered by Flare Stack Blog</p>
       </footer>
     </div>
   );
