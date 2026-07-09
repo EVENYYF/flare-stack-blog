@@ -4,7 +4,7 @@ export function PostsPageSkeleton() {
       {Array.from({ length: 6 }).map((_, index) => (
         <div
           key={index}
-          className="h-64 animate-pulse rounded-[34px] bg-white/25 dark:bg-white/10"
+          className="h-64 lg-shimmer rounded-[34px]"
         />
       ))}
     </div>

@@ -16,10 +16,7 @@ export function ForgotPasswordPage({
           重置邮件已发送至 {forgotPasswordForm.sentEmail}
         </div>
       ) : (
-        <form
-          onSubmit={forgotPasswordForm.handleSubmit}
-          className="mt-6 space-y-4"
-        >
+        <form onSubmit={forgotPasswordForm.handleSubmit} className="mt-6 space-y-4">
           {turnstileElement}
           <label className="block">
             <span className="text-sm font-medium">邮箱</span>
@@ -43,10 +40,7 @@ export function ForgotPasswordPage({
           </button>
         </form>
       )}
-      <Link
-        to="/login"
-        className="mt-5 inline-flex text-sm text-muted-foreground"
-      >
+      <Link to="/login" className="mt-5 inline-flex text-sm text-muted-foreground">
         返回登录
       </Link>
     </div>

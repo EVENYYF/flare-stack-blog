@@ -1,5 +1,5 @@
-import { Turnstile } from "@/components/common/turnstile";
 import type { SubmitFriendLinkPageProps } from "@/features/theme/contract/pages";
+import { Turnstile } from "@/components/common/turnstile";
 import { GlassPanel, PageShell } from "../../components/glass";
 
 export function SubmitFriendLinkPage({
@@ -101,9 +101,7 @@ function Input({
         {...props}
         className="mt-2 w-full rounded-full border border-white/30 bg-white/30 px-4 py-3 outline-none backdrop-blur dark:border-white/10 dark:bg-white/10"
       />
-      {error ? (
-        <span className="mt-1 block text-xs text-destructive">{error}</span>
-      ) : null}
+      {error ? <span className="mt-1 block text-xs text-destructive">{error}</span> : null}
     </label>
   );
 }

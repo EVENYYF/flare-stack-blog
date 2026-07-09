@@ -32,11 +32,7 @@ export const CodeBlock = memo(
             onClick={handleCopy}
             className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs text-white/75 transition hover:bg-white/15 hover:text-white"
           >
-            {copied ? (
-              <Check className="size-3.5" />
-            ) : (
-              <Copy className="size-3.5" />
-            )}
+            {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
             {copied ? m.common_copied() : m.common_copy_code()}
           </button>
         </div>

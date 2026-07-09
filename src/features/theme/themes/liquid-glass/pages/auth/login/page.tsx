@@ -78,9 +78,7 @@ function Field({
         {...props}
         className="mt-2 w-full rounded-full border border-white/30 bg-white/30 px-4 py-3 outline-none dark:border-white/10 dark:bg-white/10"
       />
-      {error ? (
-        <span className="mt-1 block text-xs text-destructive">{error}</span>
-      ) : null}
+      {error ? <span className="mt-1 block text-xs text-destructive">{error}</span> : null}
     </label>
   );
 }
