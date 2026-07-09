@@ -115,9 +115,7 @@ body {
 /* ─── 玻璃面板 ─────────────────────────────────────────────── */
 
 .lg-glass {
-  position: relative;
   isolation: isolate;
-  overflow: hidden;
   border: 0.5px solid var(--lg-glass-border);
   background: var(--lg-glass-bg);
   box-shadow: var(--lg-glass-shadow);
@@ -126,6 +124,13 @@ body {
   --lg-bf: blur(var(--lg-glass-blur)) saturate(1.9) brightness(1.12);
   backdrop-filter: var(--lg-bf);
 }
+
+/* 定位/裁剪用 :where 降为零优先级：作为默认值存在，但允许 markup 里的
+   fixed/sticky/overflow-y-auto 等工具类覆盖（曾踩掉进度环的 fixed 和 TOC 的 sticky） */
+@layer components { :where(.lg-glass) {
+  position: relative;
+  overflow: hidden;
+} }
 
 /* Chromium 专属：SVG 位移滤镜边缘折射（GlassFilter 组件检测后加 .lg-refract 到 html） */
 .lg-refract .lg-glass {
@@ -181,10 +186,10 @@ body {
   transition: opacity 220ms ease;
 }
 
-.lg-glass > * {
+@layer components { :where(.lg-glass > *) {
   position: relative;
   z-index: 1;
-}
+} }
 
 /* 交互玻璃：鼠标跟随光晕 + 悬停增亮 + 按压回弹（配合 glass.tsx 的指针跟踪） */
 .lg-glass-interactive {
@@ -227,8 +232,6 @@ body {
 
 /* 控件玻璃（按钮/小胶囊） */
 .lg-control {
-  position: relative;
-  overflow: hidden;
   border: 0.5px solid hsl(0 0% 100% / 0.45);
   background: hsl(0 0% 100% / 0.28);
   box-shadow: inset 0 0.5px 0.5px hsl(0 0% 100% / 0.55);
@@ -238,6 +241,11 @@ body {
     background 200ms ease,
     transform 150ms ease;
 }
+
+@layer components { :where(.lg-control) {
+  position: relative;
+  overflow: hidden;
+} }
 
 /* 光带扫过：hover 时一道高光从左掠到右（iOS 26 控件微交互） */
 .lg-control::after {

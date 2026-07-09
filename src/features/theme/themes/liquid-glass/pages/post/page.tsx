@@ -64,7 +64,7 @@ export function PostPage({ post }: PostPageProps) {
 
       <div className="relative mt-8">
         <aside className="absolute left-full top-0 ml-10 hidden h-full xl:block">
-          <div className="lg-glass sticky top-28 w-60 rounded-[26px] p-5">
+          <div className="lg-glass sticky top-28 max-h-[calc(100vh-9rem)] w-60 overflow-y-auto rounded-[26px] p-5">
             <TableOfContents headers={post.toc} />
           </div>
         </aside>
