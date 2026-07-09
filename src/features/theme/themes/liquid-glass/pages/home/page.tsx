@@ -1,15 +1,17 @@
+import { useRouteContext } from "@tanstack/react-router";
 import type { HomePageProps } from "@/features/theme/contract/pages";
 import { EmptyState, PageShell, PostCard } from "../../components/glass";
 
 export function HomePage({ posts, pinnedPosts, popularPosts }: HomePageProps) {
+  const { siteConfig } = useRouteContext({ from: "__root__" });
   const heroPost = pinnedPosts?.[0] ?? posts[0];
   const restPosts = posts.filter((post) => post.id !== heroPost?.id);
 
   return (
     <PageShell
-      eyebrow="Liquid Journal"
-      title="像 iPhone 玻璃一样轻盈的阅读界面"
-      description="半透明层级承载导航和信息卡片，正文保持清晰，让视觉氛围服务于阅读。"
+      eyebrow={siteConfig.author}
+      title={siteConfig.title}
+      description={siteConfig.description}
     >
       {heroPost ? (
         <div className="grid gap-5 lg:grid-cols-[1.25fr_0.75fr]">
@@ -23,10 +25,7 @@ export function HomePage({ posts, pinnedPosts, popularPosts }: HomePageProps) {
           </div>
         </div>
       ) : (
-        <EmptyState
-          title="暂无文章"
-          description="发布第一篇文章后会显示在这里。"
-        />
+        <EmptyState title="暂无文章" description="发布第一篇文章后会显示在这里。" />
       )}
 
       {restPosts.length ? (

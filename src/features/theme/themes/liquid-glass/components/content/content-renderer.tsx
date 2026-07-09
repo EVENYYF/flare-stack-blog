@@ -18,9 +18,5 @@ export function ContentRenderer({ content, className }: ContentRendererProps) {
     return null;
   }
 
-  return (
-    <div className={cn("ProseMirror lg-article", className)}>
-      {renderedContent}
-    </div>
-  );
+  return <div className={cn("ProseMirror lg-article", className)}>{renderedContent}</div>;
 }

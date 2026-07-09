@@ -3,7 +3,6 @@ import { ArrowLeft, Clock3, Share2 } from "lucide-react";
 import { Suspense } from "react";
 import { toast } from "sonner";
 import type { PostPageProps } from "@/features/theme/contract/pages";
-import { CommentSection } from "@/features/theme/themes/default/components/comments/view/comment-section";
 import {
   RelatedPosts,
   RelatedPostsSkeleton,
@@ -11,6 +10,8 @@ import {
 import TableOfContents from "@/features/theme/themes/default/pages/post/components/table-of-contents";
 import { formatDate } from "@/lib/utils";
 import { m } from "@/paraglide/messages";
+import { BackToTop } from "../../components/glass";
+import { CommentSection } from "../../components/comments/view/comment-section";
 import { ContentRenderer } from "../../components/content/content-renderer";
 
 export function PostPage({ post }: PostPageProps) {
@@ -98,6 +99,8 @@ export function PostPage({ post }: PostPageProps) {
       <section className="lg-glass mt-10 rounded-[34px] p-6 sm:p-10">
         <CommentSection postId={post.id} />
       </section>
+
+      <BackToTop />
     </article>
   );
 }

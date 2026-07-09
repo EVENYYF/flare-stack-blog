@@ -48,10 +48,7 @@ export function FriendLinksPage({ links }: FriendLinksPageProps) {
           ))}
         </div>
       ) : (
-        <EmptyState
-          title="暂无友链"
-          description="审核通过的友链会显示在这里。"
-        />
+        <EmptyState title="暂无友链" description="审核通过的友链会显示在这里。" />
       )}
     </PageShell>
   );

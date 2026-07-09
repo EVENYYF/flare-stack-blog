@@ -42,29 +42,20 @@
   );
   --lg-glass-border: hsl(0 0% 100% / 0.18);
   --lg-glass-shadow:
-    0 8px 32px hsl(0 0% 0% / 0.4), inset 0 0.5px 0.5px hsl(0 0% 100% / 0.15),
+    0 8px 32px hsl(0 0% 0% / 0.4),
+    inset 0 0.5px 0.5px hsl(0 0% 100% / 0.15),
     inset 0 -0.5px 0.5px hsl(0 0% 100% / 0.05);
 }
 
 /* ─── 环境背景：四色光斑 + 底层渐变 ─────────────────────────── */
 
 body {
-  background: linear-gradient(
-    180deg,
-    hsl(215 45% 96%),
-    hsl(230 40% 93%) 50%,
-    hsl(200 42% 95%)
-  );
+  background: linear-gradient(180deg, hsl(215 45% 96%), hsl(230 40% 93%) 50%, hsl(200 42% 95%));
   background-attachment: fixed;
 }
 
 .dark body {
-  background: linear-gradient(
-    180deg,
-    hsl(224 34% 8%),
-    hsl(232 32% 11%) 52%,
-    hsl(216 28% 8%)
-  );
+  background: linear-gradient(180deg, hsl(224 34% 8%), hsl(232 32% 11%) 52%, hsl(216 28% 8%));
 }
 
 .lg-theme-root {
@@ -80,11 +71,7 @@ body {
   z-index: -2;
   content: "";
   background:
-    radial-gradient(
-      38% 32% at 15% 12%,
-      hsl(var(--lg-accent-hue) 92% 66% / 0.4),
-      transparent
-    ),
+    radial-gradient(38% 32% at 15% 12%, hsl(var(--lg-accent-hue) 92% 66% / 0.4), transparent),
     radial-gradient(32% 30% at 85% 15%, hsl(324 78% 70% / 0.3), transparent),
     radial-gradient(34% 32% at 20% 85%, hsl(160 72% 60% / 0.26), transparent),
     radial-gradient(36% 34% at 85% 85%, hsl(42 90% 64% / 0.22), transparent);
@@ -94,11 +81,7 @@ body {
 
 .dark .lg-theme-root::before {
   background:
-    radial-gradient(
-      38% 32% at 15% 12%,
-      hsl(var(--lg-accent-hue) 88% 56% / 0.3),
-      transparent
-    ),
+    radial-gradient(38% 32% at 15% 12%, hsl(var(--lg-accent-hue) 88% 56% / 0.3), transparent),
     radial-gradient(32% 30% at 85% 15%, hsl(290 70% 52% / 0.22), transparent),
     radial-gradient(34% 32% at 20% 85%, hsl(160 78% 44% / 0.18), transparent),
     radial-gradient(36% 34% at 85% 85%, hsl(38 85% 50% / 0.14), transparent);
@@ -139,16 +122,15 @@ body {
   background: var(--lg-glass-bg);
   box-shadow: var(--lg-glass-shadow);
   backdrop-filter: blur(var(--lg-glass-blur)) saturate(1.9) brightness(1.12);
-  -webkit-backdrop-filter: blur(var(--lg-glass-blur)) saturate(1.9)
-    brightness(1.12);
+  -webkit-backdrop-filter: blur(var(--lg-glass-blur)) saturate(1.9) brightness(1.12);
 }
 
 /* Chromium 专属：SVG 位移滤镜边缘折射（GlassFilter 组件检测后加 .lg-refract 到 html） */
 .lg-refract .lg-glass {
   backdrop-filter: url(#lg-refraction) blur(calc(var(--lg-glass-blur) * 0.5))
     saturate(1.9) brightness(1.12);
-  -webkit-backdrop-filter: url(#lg-refraction)
-    blur(calc(var(--lg-glass-blur) * 0.5)) saturate(1.9) brightness(1.12);
+  -webkit-backdrop-filter: url(#lg-refraction) blur(calc(var(--lg-glass-blur) * 0.5))
+    saturate(1.9) brightness(1.12);
 }
 
 /* 对角镜面高光（光源 135°），交互面板叠加鼠标跟随光晕 */
@@ -219,12 +201,7 @@ body {
       hsl(0 0% 100% / 0.28),
       transparent 55%
     ),
-    linear-gradient(
-      135deg,
-      hsl(0 0% 100% / 0.2) 0%,
-      hsl(0 0% 100% / 0.04) 40%,
-      transparent 60%
-    );
+    linear-gradient(135deg, hsl(0 0% 100% / 0.2) 0%, hsl(0 0% 100% / 0.04) 40%, transparent 60%);
   opacity: 0;
   transition: opacity 300ms ease;
 }
@@ -390,6 +367,58 @@ body {
   object-fit: cover;
   overflow: hidden;
   border-radius: 30px;
+}
+
+/* 移动端触摸光晕：PostCard touchstart 时加 .lg-touched 绽放一次 */
+.lg-glass-interactive.lg-touched .lg-glass::before {
+  opacity: 1;
+}
+
+/* 骨架屏：玻璃底 + 高光带循环扫过 */
+.lg-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: hsl(0 0% 100% / 0.22);
+}
+
+.dark .lg-shimmer {
+  background: hsl(0 0% 100% / 0.08);
+}
+
+.lg-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    hsl(0 0% 100% / 0.35) 50%,
+    transparent 65%
+  );
+  transform: translateX(-100%);
+  animation: lg-shimmer 1.6s ease-in-out infinite;
+}
+
+.dark .lg-shimmer::after {
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    hsl(0 0% 100% / 0.12) 50%,
+    transparent 65%
+  );
+}
+
+@keyframes lg-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* 键盘导航焦点环（玻璃件默认 outline 被浏览器吃掉，显式补上） */
+.lg-control:focus-visible,
+.lg-glass-interactive:focus-visible {
+  outline: 2px solid hsl(var(--lg-accent-hue) 85% 55% / 0.8);
+  outline-offset: 2px;
 }
 
 /* ─── 降级与无障碍 ─────────────────────────────────────────── */

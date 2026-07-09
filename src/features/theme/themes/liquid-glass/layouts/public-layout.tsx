@@ -1,6 +1,9 @@
-import { Link } from "@tanstack/react-router";
-import { LogOut, Menu, UserRound } from "lucide-react";
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { LogOut, UserRound } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/common/theme-toggle";
 import type { PublicLayoutProps } from "@/features/theme/contract/layouts";
+import { cn } from "@/lib/utils";
 import { m } from "@/paraglide/messages";
 import { GlassFilter } from "../components/glass";
 
@@ -11,17 +14,33 @@ export function PublicLayout({
   isSessionLoading,
   logout,
 }: PublicLayoutProps) {
+  const { siteConfig } = useRouteContext({ from: "__root__" });
+  // iOS 风格：滚动后导航栏收缩、宽度收窄
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <div className="lg-theme-root flex min-h-screen flex-col text-foreground">
-      <GlassFilter />{" "}
+      <GlassFilter />
       <header className="sticky top-0 z-50 px-3 py-3 sm:px-6">
-        <nav className="lg-glass mx-auto flex h-16 max-w-6xl items-center justify-between rounded-full px-4">
+        <nav
+          className={cn(
+            "lg-glass mx-auto flex items-center justify-between rounded-full px-4 transition-all duration-300",
+            scrolled ? "h-12 max-w-4xl" : "h-16 max-w-6xl",
+          )}
+        >
           <Link to="/" className="flex items-center gap-3">
             <span className="grid size-9 place-items-center rounded-full bg-foreground text-sm font-semibold text-background">
-              LG
+              {siteConfig.title.trim().slice(0, 2)}
             </span>
             <span className="hidden text-sm font-semibold tracking-tight sm:block">
-              Liquid Glass
+              {siteConfig.title}
             </span>
           </Link>
 
@@ -69,17 +88,13 @@ export function PublicLayout({
                 {m.nav_login()}
               </Link>
             )}
-            <button
-              type="button"
-              className="lg-control grid size-9 place-items-center rounded-full md:hidden"
-              aria-label="Menu"
-            >
-              <Menu className="size-4" />
-            </button>
+            <ThemeToggle className="lg-control grid size-9 place-items-center rounded-full" />
           </div>
         </nav>
       </header>
+
       <main className="flex-1 pb-24 md:pb-0">{children}</main>
+
       <nav className="fixed inset-x-3 bottom-3 z-50 md:hidden">
         <div className="lg-glass mx-auto grid max-w-md grid-cols-4 rounded-[28px] p-2">
           {navOptions.slice(0, 3).map((option) => (
@@ -88,8 +103,7 @@ export function PublicLayout({
               to={option.to}
               className="rounded-2xl px-2 py-3 text-center text-xs text-muted-foreground"
               activeProps={{
-                className:
-                  "rounded-2xl bg-foreground px-2 py-3 text-center text-xs text-background",
+                className: "rounded-2xl bg-foreground px-2 py-3 text-center text-xs text-background",
               }}
             >
               {option.label}
@@ -103,8 +117,13 @@ export function PublicLayout({
           </Link>
         </div>
       </nav>
+
       <footer className="px-6 py-12 text-center text-xs text-muted-foreground">
-        Built with Flare Stack Blog
+        <p>
+          © {new Date().getFullYear()} {siteConfig.title}
+          {siteConfig.author ? ` · ${siteConfig.author}` : null}
+        </p>
+        <p className="mt-1 opacity-70">Powered by Flare Stack Blog</p>
       </footer>
     </div>
   );

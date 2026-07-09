@@ -1,12 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import {
-  Bell,
-  KeyRound,
-  Loader2,
-  LogOut,
-  Shield,
-  UserRound,
-} from "lucide-react";
+import { Bell, KeyRound, Loader2, LogOut, Shield, UserRound } from "lucide-react";
 import type { ProfilePageProps } from "@/features/theme/contract/pages";
 import { cn } from "@/lib/utils";
 import { m } from "@/paraglide/messages";
@@ -76,10 +69,7 @@ export function ProfilePage({
             <SectionTitle icon={<UserRound className="size-5" />}>
               {m.profile_basic_info()}
             </SectionTitle>
-            <form
-              onSubmit={profileForm.handleSubmit}
-              className="mt-6 space-y-4"
-            >
+            <form onSubmit={profileForm.handleSubmit} className="mt-6 space-y-4">
               <TextField
                 label={m.profile_name()}
                 error={profileForm.errors.name?.message}
@@ -135,10 +125,7 @@ export function ProfilePage({
               <SectionTitle icon={<KeyRound className="size-5" />}>
                 {m.profile_security_settings()}
               </SectionTitle>
-              <form
-                onSubmit={passwordForm.handleSubmit}
-                className="mt-6 space-y-4"
-              >
+              <form onSubmit={passwordForm.handleSubmit} className="mt-6 space-y-4">
                 <TextField
                   label={m.profile_current_password()}
                   type="password"

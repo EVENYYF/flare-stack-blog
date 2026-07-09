@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { CalendarDays, Clock3 } from "lucide-react";
-import { useCallback, useEffect, useRef } from "react";
+import { ArrowUp, CalendarDays, Clock3 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PostItem } from "@/features/posts/schema/posts.schema";
 import { cn, formatDate } from "@/lib/utils";
 
@@ -10,15 +10,15 @@ import { cn, formatDate } from "@/lib/utils";
  */
 const DISPLACEMENT_MAP = `data:image/svg+xml;utf8,${encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">' +
-    "<defs>" +
+    '<defs>' +
     '<linearGradient id="gx" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#ff0000"/><stop offset="1" stop-color="#000000"/></linearGradient>' +
     '<linearGradient id="gy" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#00ff00"/><stop offset="1" stop-color="#000000"/></linearGradient>' +
     '<radialGradient id="c" cx="0.5" cy="0.5" r="0.75"><stop offset="0" stop-color="#808000"/><stop offset="0.72" stop-color="#808000"/><stop offset="1" stop-color="#808000" stop-opacity="0"/></radialGradient>' +
-    "</defs>" +
+    '</defs>' +
     '<rect width="128" height="128" fill="url(#gx)"/>' +
     '<rect width="128" height="128" fill="url(#gy)" style="mix-blend-mode:screen"/>' +
     '<rect width="128" height="128" fill="url(#c)"/>' +
-    "</svg>",
+    '</svg>',
 )}`;
 
 /**
@@ -132,6 +132,55 @@ export function GlassPanel({
   return <div className={cn("lg-glass", className)}>{children}</div>;
 }
 
+/** 玻璃返回顶部按钮，外圈为阅读进度环 */
+export function BackToTop() {
+  const [progress, setProgress] = useState(0);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 0);
+      setVisible(window.scrollY > 400);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const circumference = 2 * Math.PI * 20;
+
+  return (
+    <button
+      type="button"
+      aria-label="返回顶部"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className={cn(
+        "lg-control fixed bottom-24 right-5 z-40 grid size-12 place-items-center rounded-full transition-all duration-500 md:bottom-8 md:right-8",
+        visible
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-6 opacity-0",
+      )}
+    >
+      <svg viewBox="0 0 44 44" className="absolute inset-0 size-full -rotate-90">
+        <circle
+          cx="22"
+          cy="22"
+          r="20"
+          fill="none"
+          stroke="hsl(var(--lg-accent-hue) 85% 55% / 0.85)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference * (1 - progress)}
+        />
+      </svg>
+      <ArrowUp className="size-4" />
+    </button>
+  );
+}
+
 export function EmptyState({
   title,
   description,
@@ -178,6 +227,24 @@ export function PostCard({
       "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)";
   }, []);
 
+  // 移动端没有 hover：触摸时在触点绽放一次光晕
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLAnchorElement>) => {
+    const card = cardRef.current;
+    const touch = e.touches[0];
+    if (!card || !touch) return;
+    const rect = card.getBoundingClientRect();
+    card.style.setProperty(
+      "--lg-mx",
+      `${((touch.clientX - rect.left) / rect.width) * 100}%`,
+    );
+    card.style.setProperty(
+      "--lg-my",
+      `${((touch.clientY - rect.top) / rect.height) * 100}%`,
+    );
+    card.classList.add("lg-touched");
+    window.setTimeout(() => card.classList.remove("lg-touched"), 650);
+  }, []);
+
   return (
     <Link
       ref={cardRef}
@@ -185,6 +252,7 @@ export function PostCard({
       params={{ slug: post.slug }}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
       className={cn(
         "lg-glass-interactive group block rounded-[30px]",
         "hover:shadow-[0_30px_90px_hsl(var(--lg-accent-hue)_70%_25%/0.2)]",
