@@ -157,10 +157,10 @@ export function BackToTop() {
       aria-label="返回顶部"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={cn(
-        "lg-control fixed bottom-24 right-5 z-40 grid size-12 place-items-center rounded-full transition-all duration-500 md:bottom-8 md:right-8",
+        "lg-control fixed right-3 top-1/2 z-40 grid size-12 -translate-y-1/2 place-items-center rounded-full transition-all duration-500 md:right-6",
         visible
-          ? "translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-6 opacity-0",
+          ? "translate-x-0 opacity-100"
+          : "pointer-events-none translate-x-12 opacity-0",
       )}
     >
       <svg viewBox="0 0 44 44" className="absolute inset-0 size-full -rotate-90">
