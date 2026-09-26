@@ -132,6 +132,7 @@ body:has(.lg-glass-root) {
 
 .lg-glass-root .fuwari-card-base {
   isolation: isolate;
+  background: var(--lg-glass-bg);
   border: 0.5px solid var(--lg-glass-border);
   box-shadow: var(--lg-glass-shadow);
   backdrop-filter: var(--lg-bf);
