@@ -29,6 +29,11 @@
     inset 0 -0.5px 0.5px hsl(0 0% 100% / 0.15);
   /* 值经由变量引用：阻止 lightningcss 把标准属性"优化"成仅 -webkit- 前缀 */
   --lg-bf: blur(var(--lg-glass-blur)) saturate(1.9) brightness(1.12);
+  /* 文章页三栏平衡：Fuwari 默认目录宽度 calc((100vw - 75rem)/2 - 1rem)
+     随视口无限变宽，超宽屏下右侧目录远宽于左侧边栏（17.5rem），
+     视觉重心偏右。收敛到与左侧边栏同宽，左右对称。
+     注：TOC 经 portal 挂在 body 下，不在 .lg-glass-root 内，变量须定义在 :root。 */
+  --fuwari-toc-width: min(17.5rem, calc((100vw - var(--fuwari-page-width)) / 2 - 1rem));
 }
 
 .dark {
